@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Planner | Manage Your Projects</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    
+    <!-- Auth View: Login & Register -->
+    <div id="auth-view" class="view-section active">
+        <div class="glass-panel auth-panel">
+            <h1 class="brand-title">Day Planner</h1>
+            <p class="subtitle">Organize your projects effortlessly</p>
+
+            <div class="tabs">
+                <button class="tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Log In</button>
+                <button class="tab-btn" id="tab-register" onclick="switchAuthTab('register')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn primary-btn full-width">Log In</button>
+                <div class="error-msg" id="login-error"></div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" onsubmit="handleRegister(event)" style="display: none;">
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" required placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="reg-phone">Phone Number</label>
+                    <input type="text" id="reg-phone" required placeholder="+1234567890">
+                </div>
+                <div class="form-group">
+                    <label for="reg-role">Role</label>
+                    <select id="reg-role">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" required placeholder="Create a password">
+                </div>
+                <button type="submit" class="btn primary-btn full-width">Sign Up</button>
+                <div class="error-msg" id="reg-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- App View: Dashboard, Projects, Tasks -->
+    <div id="app-view" class="view-section">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Day Planner</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" onclick="navigate('dashboard')" id="nav-dashboard" class="active">Dashboard</a>
+                <a href="#" onclick="navigate('projects')" id="nav-projects">Projects</a>
+                <a href="#" onclick="navigate('tasks')" id="nav-tasks">Tasks</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button onclick="handleLogout()" class="btn secondary-btn full-width">Log Out</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 id="current-view-title">Dashboard</h2>
+                <div class="user-profile">
+                    <span id="user-greeting">Hello, User</span>
+                    <div class="avatar">U</div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                
+                <!-- Dashboard Content -->
+                <div id="view-dashboard" class="sub-view">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Tasks</h3>
+                            <p class="stat-value" id="stat-total">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pending</h3>
+                            <p class="stat-value text-warning" id="stat-pending">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>In Progress</h3>
+                            <p class="stat-value text-info" id="stat-progress">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Completed</h3>
+                            <p class="stat-value text-success" id="stat-completed">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Overdue</h3>
+                            <p class="stat-value text-danger" id="stat-overdue">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Content -->
+                <div id="view-projects" class="sub-view">
+                    <div class="action-bar">
+                        <button class="btn primary-btn" onclick="openModal('project-modal')">+ New Project</button>
+                    </div>
+                    <div class="card-grid" id="projects-list">
+                        <!-- Projects loaded via JS -->
+                    </div>
+                </div>
+
+                <!-- Tasks Content -->
+                <div id="view-tasks" class="sub-view">
+                    <div class="action-bar">
+                        <button class="btn primary-btn" onclick="openTaskModal()">+ New Task</button>
+                    </div>
+                    <div class="task-list" id="tasks-list">
+                        <!-- Tasks loaded via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Project Modal -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-btn" onclick="closeModal('project-modal')">&times;</span>
+            <h2>Create Project</h2>
+            <form id="create-project-form" onsubmit="handleCreateProject(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="project-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="project-desc" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn primary-btn">Save Project</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-btn" onclick="closeModal('task-modal')">&times;</span>
+            <h2>Create Task</h2>
+            <form id="create-task-form" onsubmit="handleCreateTask(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="task-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="task-desc" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Project</label>
+                    <select id="task-project-id" required>
+                        <!-- Loaded dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assign To (Optional)</label>
+                    <select id="task-assignee-id">
+                        <option value="">Unassigned</option>
+                        <!-- Loaded dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Priority (1-5)</label>
+                    <input type="number" id="task-priority" min="1" max="5" value="3" required>
+                </div>
+                <button type="submit" class="btn primary-btn">Save Task</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
