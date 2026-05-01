@@ -71,10 +71,5 @@ async def list_all_users(
     db: db_dependency,
     current_user: current_user_dependency
 ):
-    """list all users, admin only access"""
-    if current_user.role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
-            detail="You do not have permission to view all users"
-        )
+    """list all users"""
     return db.query(models.User).all()

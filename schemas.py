@@ -56,7 +56,7 @@ class TaskBase(BaseModel):
 
 class TaskCreate(TaskBase):
     project_id: int
-    assignee_id: int
+    assignee_id: Optional[int] = None
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
